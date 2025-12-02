@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Users, GraduationCap, BookOpen, Calendar } from 'lucide-react';
-import StatCard from '../components/StatCard';
-import { dashboardService } from '../services';
+// import StatCard from '../components/StatCard';
+// import { dashboardService } from '../services';
 
 const DashboardPage = () => {
   const [stats, setStats] = useState({

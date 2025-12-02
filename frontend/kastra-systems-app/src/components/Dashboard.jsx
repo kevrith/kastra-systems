@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import Sidebar from './Sidebar';
-import Header from './Header';
+// import Sidebar from './Sidebar';
+// import Header from './Header';
 import DashboardPage from '../pages/DashboardPage';
-import StudentsPage from '../pages/StudentsPage';
-import TeachersPage from '../pages/TeachersPage';
-import CoursesPage from '../pages/CoursesPage';
-import GradesPage from '../pages/GradesPage';
-import AttendancePage from '../pages/AttendancePage';
-import AnnouncementsPage from '../pages/AnnouncementsPage';
+// import StudentsPage from '../pages/StudentsPage';
+// import TeachersPage from '../pages/TeachersPage';
+// import CoursesPage from '../pages/CoursesPage';
+// import GradesPage from '../pages/GradesPage';
+// import AttendancePage from '../pages/AttendancePage';
+// import AnnouncementsPage from '../pages/AnnouncementsPage';
 
 const Dashboard = ({ user, onLogout }) => {
   const [activeTab, setActiveTab] = useState('dashboard');
