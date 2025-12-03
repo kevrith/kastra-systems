@@ -60,7 +60,7 @@ const Sidebar = ({ activeTab, setActiveTab, sidebarOpen, setSidebarOpen }) => {
       {/* Footer */}
       {sidebarOpen && (
         <div className="p-4 border-t border-blue-800 text-sm text-blue-200">
-          <p>© 2024 School Management</p>
+          <p>© {new Date().getFullYear()} School Management</p>
           <p className="text-xs mt-1">Version 1.0.0</p>
         </div>
       )}
