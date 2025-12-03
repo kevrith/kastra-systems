@@ -50,10 +50,12 @@ const Login = ({ onLogin }) => {
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
             <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-                <div className="flex justify-center mb-6">
-                    <GraduationCap className="w-12 h-12 text-blue-600" />
-                    <h1 className="text-3xl font-bold text-gray-800 ml-2">Kastra School Management System</h1>
-                    <p className="text-3xl font-bold text-gray-800 ml-2">{isRegister ? 'Create Account' : 'Welcome Back'}</p>
+                <div className="text-center mb-6">
+                    <div className="flex justify-center items-center mb-4">
+                        <GraduationCap className="w-12 h-12 text-blue-600" />
+                        <h1 className="text-2xl font-bold text-gray-800 ml-2">Kastra SMS</h1>
+                    </div>
+                    <p className="text-xl font-bold text-gray-800">{isRegister ? 'Create Account' : 'Welcome Back'}</p>
                 </div>
                {error && (
           <div className={`${

@@ -2,15 +2,15 @@ import { post } from './api';
 
 const authService = {
   // Login user
-  login: async (username, password) => {
+  login: async (credentials) => {
     try {
-      const response = await post('/auth/login', { username, password });
-      
+      const response = await post('/auth/login', credentials);
+
       if (response.access_token) {
         localStorage.setItem('token', response.access_token);
         localStorage.setItem('user', JSON.stringify(response.user));
       }
-      
+
       return response;
     } catch (error) {
       throw error;
