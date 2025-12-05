@@ -17,3 +17,4 @@ Port 5173 is in use, trying another one...
 1:19:25 PM [vite] server restarted.
 
 1:19:25 PM [vite] server restarted.
+1:53:56 PM [vite] (client) hmr update /src/index.css, /src/components/Login.jsx, /src/pages/StudentsPage.jsx, /src/pages/AttendancePage.jsx, /src/pages/GradesPage.jsx, /src/pages/ReportCardPage.jsx, /src/pages/FeeStructurePage.jsx, /src/pages/DashboardPage.jsx, /src/pages/TeachersPage.jsx, /src/pages/CoursesPage.jsx, /src/pages/AssignmentsPage.jsx, /src/pages/AnnouncementsPage.jsx

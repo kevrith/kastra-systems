@@ -26,8 +26,10 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",  # Local Vite dev server
+        "http://localhost:5174",  # Alternative local port
         "http://localhost:3000",  # Alternative local port
-        "https://kastra.netlify.app"  # Production frontend
+        "https://kastra.netlify.app",  # Production frontend
+        "https://precious-selkie-c861a9.netlify.app"  # Alternative Netlify domain
     ],
     allow_credentials=True,
     allow_methods=["*"],
