@@ -1,0 +1,70 @@
+INFO:     Will watch for changes in these directories: ['/home/kelvin/Development/Phase-3/kastra-systems/backend']
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [11072] using WatchFiles
+INFO:     Started server process [11093]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:42908 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42908 - "GET /openapi.json HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40128 - "OPTIONS /api/dashboard/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40146 - "OPTIONS /api/dashboard/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40134 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40134 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40128 - "GET /api/dashboard/stats HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:40146 - "GET /api/dashboard/stats HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:60494 - "OPTIONS /api/auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60508 - "POST /api/auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60494 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60494 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60508 - "GET /api/dashboard/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60508 - "GET /api/dashboard/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51910 - "OPTIONS /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51926 - "OPTIONS /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51926 - "GET /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51910 - "OPTIONS /api/courses/1/assignments HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51926 - "GET /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51910 - "GET /api/courses/1/assignments HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51910 - "GET /api/courses/1/assignments HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51910 - "OPTIONS /api/students HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51926 - "OPTIONS /api/assignments HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51928 - "OPTIONS /api/students HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51944 - "OPTIONS /api/assignments HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51910 - "GET /api/assignments HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51926 - "GET /api/students HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51910 - "GET /api/assignments HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51926 - "GET /api/students HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51910 - "GET /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51926 - "GET /api/students HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51910 - "GET /api/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51926 - "GET /api/students HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51926 - "GET /api/students HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51926 - "GET /api/students HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51910 - "OPTIONS /api/fees/structures/2024-2025/10 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51910 - "GET /api/fees/structures/2024-2025/10 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51926 - "OPTIONS /api/fees/records/student/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51910 - "GET /api/fees/structures/2024-2025/10 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51926 - "GET /api/fees/records/student/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51926 - "GET /api/fees/records/student/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51926 - "GET /api/students HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51926 - "GET /api/students HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51926 - "OPTIONS /api/students/1/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51926 - "GET /api/students/1/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51926 - "GET /api/students/1/courses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51910 - "OPTIONS /api/students/1/grades HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51910 - "GET /api/students/1/grades HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51926 - "OPTIONS /api/students/1/attendance HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51910 - "GET /api/students/1/grades HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51926 - "GET /api/students/1/attendance HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51910 - "OPTIONS /api/report-cards/student/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51926 - "GET /api/students/1/attendance HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51910 - "GET /api/report-cards/student/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51910 - "GET /api/report-cards/student/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51926 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51926 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51910 - "GET /api/dashboard/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51910 - "GET /api/dashboard/stats HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [11093]
+INFO:     Stopping reloader process [11072]
