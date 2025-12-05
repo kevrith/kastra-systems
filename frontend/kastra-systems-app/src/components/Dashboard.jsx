@@ -5,8 +5,11 @@ import DashboardPage from '../pages/DashboardPage';
 import StudentsPage from '../pages/StudentsPage';
 import TeachersPage from '../pages/TeachersPage';
 import CoursesPage from '../pages/CoursesPage';
+import AssignmentsPage from '../pages/AssignmentsPage';
 import GradesPage from '../pages/GradesPage';
 import AttendancePage from '../pages/AttendancePage';
+import ReportCardPage from '../pages/ReportCardPage';
+import FeeStructurePage from '../pages/FeeStructurePage';
 import AnnouncementsPage from '../pages/AnnouncementsPage';
 
 const Dashboard = ({ user, onLogout }) => {
@@ -20,13 +23,19 @@ const Dashboard = ({ user, onLogout }) => {
       case 'students':
         return <StudentsPage />;
       case 'teachers':
-        return <TeachersPage />;
+        return <TeachersPage user={user} />;
       case 'courses':
         return <CoursesPage />;
+      case 'assignments':
+        return <AssignmentsPage user={user} />;
       case 'grades':
         return <GradesPage />;
       case 'attendance':
         return <AttendancePage />;
+      case 'reports':
+        return <ReportCardPage />;
+      case 'fees':
+        return <FeeStructurePage />;
       case 'announcements':
         return <AnnouncementsPage user={user} />;
       default:
@@ -54,7 +63,7 @@ const Dashboard = ({ user, onLogout }) => {
         />
 
         {/* Page Content */}
-        <main className="flex-1 overflow-y-auto p-6">
+        <main className="flex-1 overflow-y-auto p-6" key={activeTab}>
           {renderContent()}
         </main>
       </div>

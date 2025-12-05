@@ -3,10 +3,11 @@ import { GraduationCap } from 'lucide-react';
 import authService from '../services/authService';
 
 const Login = ({ onLogin }) => {
-    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isRegister, setIsRegister] = useState(false);
-    const [email, setEmail] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
     const [role, setRole] = useState('student');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
@@ -17,31 +18,38 @@ const Login = ({ onLogin }) => {
         setLoading(true);
 
         // Basic validation
-        if (!username || !password) {
-            setError('Please enter username and password.');
+        if (!email || !password) {
+            setError('Please enter email and password.');
             setLoading(false);
             return;
         }
-        if (isRegister && !email) {
-            setError('Please enter an email for registration.');
+        if (isRegister && (!firstName || !lastName)) {
+            setError('Please enter first name and last name for registration.');
             setLoading(false);
             return;
         }
 
         try {
             if (isRegister) {
-                await authService.register({ username, email, password, role });
+                await authService.register({
+                    email,
+                    first_name: firstName,
+                    last_name: lastName,
+                    password,
+                    role
+                });
                 setIsRegister(false);
                 setError('Registration successful. Please log in.');
-                setUsername('');
-                setPassword('');
                 setEmail('');
+                setPassword('');
+                setFirstName('');
+                setLastName('');
             } else {
-                const response = await authService.login({ username, password });
+                const response = await authService.login({ email, password });
                 onLogin(response.user);
             }
         } catch (err) {
-            setError(err.message || 'Authenticationb failed. Please try again.');
+            setError(err.message || 'Authentication failed. Please try again.');
         } finally {
             setLoading(false);
         }
@@ -68,14 +76,14 @@ const Login = ({ onLogin }) => {
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Username
+              Email
             </label>
             <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Enter your username"
+              placeholder="Enter your email"
               disabled={loading}
               required
             />
@@ -85,14 +93,28 @@ const Login = ({ onLogin }) => {
             <>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Email
+                  First Name
                 </label>
                 <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  type="text"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Enter your email"
+                  placeholder="Enter your first name"
+                  disabled={loading}
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Last Name
+                </label>
+                <input
+                  type="text"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Enter your last name"
                   disabled={loading}
                   required
                 />
@@ -155,7 +177,9 @@ const Login = ({ onLogin }) => {
         </div>
 
         <div className="mt-4 text-xs text-gray-500 text-center">
-          <p>Demo credentials: username: admin, password: admin123</p>
+          <p>Demo credentials:</p>
+          <p>Email: admin@kastra.com</p>
+          <p>Password: admin123</p>
         </div>
       </div>
     </div>

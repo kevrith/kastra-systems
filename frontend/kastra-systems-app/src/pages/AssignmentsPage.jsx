@@ -1,4 +1,4 @@
-import React from 'react';import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus, FileText, Calendar, Clock, CheckCircle, XCircle } from 'lucide-react';
 import Modal from '../components/Modal';
 import { courseService, assignmentService } from '../services';
@@ -9,15 +9,18 @@ const AssignmentsPage = ({ user }) => {
   const [assignments, setAssignments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [editingAssignment, setEditingAssignment] = useState(null);
   const [formData, setFormData] = useState({
     course_id: '',
     title: '',
     description: '',
     due_date: '',
-    max_marks: '',
+    max_points: '',
   });
 
   useEffect(() => {
+    console.log('AssignmentsPage mounted, user:', user);
     loadCourses();
   }, []);
 
@@ -56,32 +59,65 @@ const AssignmentsPage = ({ user }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await assignmentService.createAssignment({
-        ...formData,
-        course_id: parseInt(formData.course_id),
-        max_marks: parseInt(formData.max_marks),
-      });
+      if (editMode && editingAssignment) {
+        // Update existing assignment
+        await assignmentService.updateAssignment(editingAssignment.id, {
+          title: formData.title,
+          description: formData.description,
+          due_date: formData.due_date,
+          max_points: parseFloat(formData.max_points),
+        });
+        alert('Assignment updated successfully!');
+      } else {
+        // Create new assignment
+        await assignmentService.createAssignment({
+          ...formData,
+          course_id: parseInt(formData.course_id),
+          max_points: parseFloat(formData.max_points),
+        });
+        alert('Assignment created successfully!');
+      }
+
       setShowModal(false);
+      setEditMode(false);
+      setEditingAssignment(null);
       setFormData({
         course_id: '',
         title: '',
         description: '',
         due_date: '',
-        max_marks: '',
+        max_points: '',
       });
       if (selectedCourse) {
         loadAssignments(selectedCourse.id);
       }
-      alert('Assignment created successfully!');
     } catch (error) {
-      alert('Failed to create assignment: ' + error.message);
+      alert(`Failed to ${editMode ? 'update' : 'create'} assignment: ` + error.message);
     }
   };
 
   const openModal = () => {
+    setEditMode(false);
+    setEditingAssignment(null);
     setFormData({
-      ...formData,
       course_id: selectedCourse ? selectedCourse.id : '',
+      title: '',
+      description: '',
+      due_date: '',
+      max_points: '',
+    });
+    setShowModal(true);
+  };
+
+  const openEditModal = (assignment) => {
+    setEditMode(true);
+    setEditingAssignment(assignment);
+    setFormData({
+      course_id: assignment.course_id,
+      title: assignment.title,
+      description: assignment.description || '',
+      due_date: assignment.due_date ? assignment.due_date.split('T')[0] : '',
+      max_points: assignment.max_points.toString(),
     });
     setShowModal(true);
   };
@@ -250,8 +286,8 @@ const AssignmentsPage = ({ user }) => {
                           <div className="flex items-center text-gray-600">
                             <FileText className="w-4 h-4 mr-2 text-green-500" />
                             <div>
-                              <p className="text-xs text-gray-500">Max Marks</p>
-                              <p className="font-medium">{assignment.max_marks} points</p>
+                              <p className="text-xs text-gray-500">Max Points</p>
+                              <p className="font-medium">{assignment.max_points} points</p>
                             </div>
                           </div>
 
@@ -266,13 +302,22 @@ const AssignmentsPage = ({ user }) => {
                           </div>
                         </div>
 
-                        {user.role === 'student' && (
+                        {user.role === 'student' ? (
                           <div className="mt-4 flex space-x-3">
                             <button className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition">
                               Submit Assignment
                             </button>
                             <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
                               View Details
+                            </button>
+                          </div>
+                        ) : (user.role === 'admin' || user.role === 'teacher') && (
+                          <div className="mt-4 flex justify-end">
+                            <button
+                              onClick={() => openEditModal(assignment)}
+                              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                            >
+                              Edit Assignment
                             </button>
                           </div>
                         )}
@@ -291,11 +336,15 @@ const AssignmentsPage = ({ user }) => {
         </div>
       </div>
 
-      {/* Create Assignment Modal */}
+      {/* Create/Edit Assignment Modal */}
       <Modal
         isOpen={showModal}
-        onClose={() => setShowModal(false)}
-        title="Create New Assignment"
+        onClose={() => {
+          setShowModal(false);
+          setEditMode(false);
+          setEditingAssignment(null);
+        }}
+        title={editMode ? "Edit Assignment" : "Create New Assignment"}
         size="lg"
       >
         <div className="space-y-4">
@@ -306,8 +355,9 @@ const AssignmentsPage = ({ user }) => {
             <select
               value={formData.course_id}
               onChange={(e) => setFormData({ ...formData, course_id: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
               required
+              disabled={editMode}
             >
               <option value="">Select a course</option>
               {courses.map((course) => (
@@ -361,12 +411,13 @@ const AssignmentsPage = ({ user }) => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Maximum Marks *
+                Maximum Points *
               </label>
               <input
                 type="number"
-                value={formData.max_marks}
-                onChange={(e) => setFormData({ ...formData, max_marks: e.target.value })}
+                step="0.01"
+                value={formData.max_points}
+                onChange={(e) => setFormData({ ...formData, max_points: e.target.value })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="100"
                 min="1"
@@ -387,7 +438,7 @@ const AssignmentsPage = ({ user }) => {
               onClick={handleSubmit}
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
             >
-              Create Assignment
+              {editMode ? 'Update Assignment' : 'Create Assignment'}
             </button>
           </div>
         </div>

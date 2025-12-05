@@ -8,6 +8,7 @@ const StudentsPage = () => {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [editingStudent, setEditingStudent] = useState(null);
   const [formData, setFormData] = useState({
     student_id: '',
     name: '',
@@ -18,6 +19,7 @@ const StudentsPage = () => {
     grade_level: '',
     guardian_name: '',
     guardian_phone: '',
+    guardian_email: '',
   });
 
   useEffect(() => {
@@ -37,14 +39,41 @@ const StudentsPage = () => {
     }
   };
 
+  const handleEdit = (student) => {
+    setEditingStudent(student);
+    setFormData({
+      student_id: student.student_id || '',
+      name: `${student.user?.first_name || ''} ${student.user?.last_name || ''}`.trim(),
+      email: student.user?.email || '',
+      phone: student.phone || '',
+      address: student.address || '',
+      date_of_birth: student.date_of_birth || '',
+      grade_level: student.grade_level || '',
+      guardian_name: student.guardian_name || '',
+      guardian_phone: student.guardian_phone || '',
+      guardian_email: student.guardian_email || '',
+    });
+    setShowModal(true);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await studentService.createStudent({
+      const studentData = {
         ...formData,
         grade_level: parseInt(formData.grade_level),
-      });
+      };
+
+      if (editingStudent) {
+        await studentService.updateStudent(editingStudent.id, studentData);
+        alert('Student updated successfully!');
+      } else {
+        await studentService.createStudent(studentData);
+        alert('Student added successfully!');
+      }
+
       setShowModal(false);
+      setEditingStudent(null);
       setFormData({
         student_id: '',
         name: '',
@@ -55,11 +84,11 @@ const StudentsPage = () => {
         grade_level: '',
         guardian_name: '',
         guardian_phone: '',
+        guardian_email: '',
       });
       loadStudents();
-      alert('Student added successfully!');
     } catch (error) {
-      alert('Failed to add student: ' + error.message);
+      alert(`Failed to ${editingStudent ? 'update' : 'add'} student: ` + error.message);
     }
   };
 
@@ -75,11 +104,14 @@ const StudentsPage = () => {
     }
   };
 
-  const filteredStudents = students.filter(student =>
-    student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    student.student_id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    student.email.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredStudents = students.filter(student => {
+    const fullName = `${student.user?.first_name || ''} ${student.user?.last_name || ''}`.toLowerCase();
+    const email = (student.user?.email || '').toLowerCase();
+    const id = String(student.id || '');
+    return fullName.includes(searchTerm.toLowerCase()) ||
+           email.includes(searchTerm.toLowerCase()) ||
+           id.includes(searchTerm.toLowerCase());
+  });
 
   if (loading) {
     return (
@@ -106,7 +138,22 @@ const StudentsPage = () => {
           </div>
         </div>
         <button
-          onClick={() => setShowModal(true)}
+          onClick={() => {
+            setEditingStudent(null);
+            setFormData({
+              student_id: '',
+              name: '',
+              email: '',
+              phone: '',
+              address: '',
+              date_of_birth: '',
+              grade_level: '',
+              guardian_name: '',
+              guardian_phone: '',
+              guardian_email: '',
+            });
+            setShowModal(true);
+          }}
           className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
         >
           <Plus className="w-5 h-5" />
@@ -121,7 +168,7 @@ const StudentsPage = () => {
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Student ID
+                  ID
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Name
@@ -130,7 +177,7 @@ const StudentsPage = () => {
                   Email
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Grade Level
+                  Phone
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Status
@@ -151,28 +198,25 @@ const StudentsPage = () => {
                 filteredStudents.map((student) => (
                   <tr key={student.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {student.student_id}
+                      {student.id}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {student.name}
+                      {student.user?.first_name} {student.user?.last_name}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {student.email}
+                      {student.user?.email}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      Grade {student.grade_level}
+                      {student.phone || 'N/A'}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        student.status === 'active' 
-                          ? 'bg-green-100 text-green-800' 
-                          : 'bg-red-100 text-red-800'
-                      }`}>
-                        {student.status}
+                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                        Active
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
                       <button
+                        onClick={() => handleEdit(student)}
                         className="text-blue-600 hover:text-blue-900"
                         title="Edit"
                       >
@@ -194,11 +238,14 @@ const StudentsPage = () => {
         </div>
       </div>
 
-      {/* Add Student Modal */}
+      {/* Add/Edit Student Modal */}
       <Modal
         isOpen={showModal}
-        onClose={() => setShowModal(false)}
-        title="Add New Student"
+        onClose={() => {
+          setShowModal(false);
+          setEditingStudent(null);
+        }}
+        title={editingStudent ? "Edit Student" : "Add New Student"}
         size="lg"
       >
         <div className="space-y-4">
@@ -297,6 +344,17 @@ const StudentsPage = () => {
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               />
             </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Guardian Email
+              </label>
+              <input
+                type="email"
+                value={formData.guardian_email}
+                onChange={(e) => setFormData({...formData, guardian_email: e.target.value})}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -322,7 +380,7 @@ const StudentsPage = () => {
               onClick={handleSubmit}
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
             >
-              Add Student
+              {editingStudent ? 'Update Student' : 'Add Student'}
             </button>
           </div>
         </div>

@@ -10,11 +10,22 @@ const DashboardPage = () => {
     total_courses: 0,
     total_enrollments: 0,
   });
+  const [health, setHealth] = useState({
+    status: 'unknown',
+    components: {
+      api: { status: 'offline', message: 'Checking...' },
+      database: { status: 'offline', message: 'Checking...' }
+    }
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     loadStats();
+    loadHealth();
+    // Poll health status every 30 seconds
+    const healthInterval = setInterval(loadHealth, 30000);
+    return () => clearInterval(healthInterval);
   }, []);
 
   const loadStats = async () => {
@@ -22,11 +33,28 @@ const DashboardPage = () => {
       setLoading(true);
       const data = await dashboardService.getStats();
       setStats(data);
+      setError(null);
     } catch (err) {
       setError(err.message);
       console.error('Error loading stats:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadHealth = async () => {
+    try {
+      const healthData = await dashboardService.getHealth();
+      setHealth(healthData);
+    } catch (err) {
+      console.error('Error loading health:', err);
+      setHealth({
+        status: 'unhealthy',
+        components: {
+          api: { status: 'offline', message: 'Cannot reach API' },
+          database: { status: 'offline', message: 'Cannot check database' }
+        }
+      });
     }
   };
 
@@ -127,20 +155,52 @@ const DashboardPage = () => {
             <div>
               <div className="flex justify-between text-sm mb-1">
                 <span className="text-gray-600">Database</span>
-                <span className="text-green-600 font-medium">Healthy</span>
+                <span className={`font-medium ${
+                  health.components.database.status === 'online'
+                    ? 'text-green-600'
+                    : 'text-red-600'
+                }`}>
+                  {health.components.database.status === 'online' ? 'Online' : 'Offline'}
+                </span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2">
-                <div className="bg-green-500 h-2 rounded-full" style={{width: '100%'}}></div>
+                <div
+                  className={`h-2 rounded-full ${
+                    health.components.database.status === 'online'
+                      ? 'bg-green-500'
+                      : 'bg-red-500'
+                  }`}
+                  style={{
+                    width: health.components.database.status === 'online' ? '100%' : '0%'
+                  }}
+                ></div>
               </div>
+              <p className="text-xs text-gray-500 mt-1">{health.components.database.message}</p>
             </div>
             <div>
               <div className="flex justify-between text-sm mb-1">
                 <span className="text-gray-600">API Status</span>
-                <span className="text-green-600 font-medium">Online</span>
+                <span className={`font-medium ${
+                  health.components.api.status === 'online'
+                    ? 'text-green-600'
+                    : 'text-red-600'
+                }`}>
+                  {health.components.api.status === 'online' ? 'Online' : 'Offline'}
+                </span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2">
-                <div className="bg-green-500 h-2 rounded-full" style={{width: '100%'}}></div>
+                <div
+                  className={`h-2 rounded-full ${
+                    health.components.api.status === 'online'
+                      ? 'bg-green-500'
+                      : 'bg-red-500'
+                  }`}
+                  style={{
+                    width: health.components.api.status === 'online' ? '100%' : '0%'
+                  }}
+                ></div>
               </div>
+              <p className="text-xs text-gray-500 mt-1">{health.components.api.message}</p>
             </div>
           </div>
         </div>

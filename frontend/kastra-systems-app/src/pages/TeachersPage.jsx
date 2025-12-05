@@ -3,17 +3,19 @@ import { Plus, Search, Edit, Trash2 } from 'lucide-react';
 import Modal from '../components/Modal';
 import { teacherService } from '../services';
 
-const TeachersPage = () => {
+const TeachersPage = ({ user }) => {
   const [teachers, setTeachers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [editingTeacher, setEditingTeacher] = useState(null);
+  const isAdmin = user?.role === 'admin';
   const [formData, setFormData] = useState({
     teacher_id: '',
     name: '',
     email: '',
     phone: '',
-    subject: '',
+    department: '',
     qualification: '',
     experience_years: '',
     salary: '',
@@ -35,36 +37,75 @@ const TeachersPage = () => {
     }
   };
 
+  const handleEdit = (teacher) => {
+    setEditingTeacher(teacher);
+    setFormData({
+      teacher_id: teacher.teacher_id || '',
+      name: `${teacher.user?.first_name || ''} ${teacher.user?.last_name || ''}`.trim(),
+      email: teacher.user?.email || '',
+      phone: teacher.phone || '',
+      department: teacher.department || '',
+      qualification: teacher.qualification || '',
+      experience_years: teacher.experience_years || '',
+      salary: teacher.salary || '',
+    });
+    setShowModal(true);
+  };
+
+  const handleDelete = async (id) => {
+    if (window.confirm('Are you sure you want to delete this teacher?')) {
+      try {
+        await teacherService.deleteTeacher(id);
+        loadTeachers();
+        alert('Teacher deleted successfully!');
+      } catch (error) {
+        alert('Failed to delete teacher: ' + error.message);
+      }
+    }
+  };
+
   const handleSubmit = async () => {
     try {
-      await teacherService.createTeacher({
+      const teacherData = {
         ...formData,
         experience_years: formData.experience_years ? parseInt(formData.experience_years) : null,
         salary: formData.salary ? parseFloat(formData.salary) : null,
-      });
+      };
+
+      if (editingTeacher) {
+        await teacherService.updateTeacher(editingTeacher.id, teacherData);
+        alert('Teacher updated successfully!');
+      } else {
+        await teacherService.createTeacher(teacherData);
+        alert('Teacher added successfully!');
+      }
+
       setShowModal(false);
+      setEditingTeacher(null);
       setFormData({
         teacher_id: '',
         name: '',
         email: '',
         phone: '',
-        subject: '',
+        department: '',
         qualification: '',
         experience_years: '',
         salary: '',
       });
       loadTeachers();
-      alert('Teacher added successfully!');
     } catch (error) {
-      alert('Failed to add teacher: ' + error.message);
+      alert(`Failed to ${editingTeacher ? 'update' : 'add'} teacher: ` + error.message);
     }
   };
 
-  const filteredTeachers = teachers.filter(teacher =>
-    teacher.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    teacher.teacher_id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    teacher.subject.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredTeachers = teachers.filter(teacher => {
+    const fullName = `${teacher.user?.first_name || ''} ${teacher.user?.last_name || ''}`.toLowerCase();
+    const email = (teacher.user?.email || '').toLowerCase();
+    const dept = (teacher.department || '').toLowerCase();
+    return fullName.includes(searchTerm.toLowerCase()) ||
+           email.includes(searchTerm.toLowerCase()) ||
+           dept.includes(searchTerm.toLowerCase());
+  });
 
   if (loading) {
     return (
@@ -89,46 +130,95 @@ const TeachersPage = () => {
             />
           </div>
         </div>
-        <button
-          onClick={() => setShowModal(true)}
-          className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-        >
-          <Plus className="w-5 h-5" />
-          <span>Add Teacher</span>
-        </button>
+        {isAdmin && (
+          <button
+            onClick={() => {
+              setEditingTeacher(null);
+              setFormData({
+                teacher_id: '',
+                name: '',
+                email: '',
+                phone: '',
+                department: '',
+                qualification: '',
+                experience_years: '',
+                salary: '',
+              });
+              setShowModal(true);
+            }}
+            className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+          >
+            <Plus className="w-5 h-5" />
+            <span>Add Teacher</span>
+          </button>
+        )}
       </div>
 
       <div className="bg-white rounded-lg shadow overflow-hidden">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Teacher ID</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Subject</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Experience</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Department</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Phone</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {filteredTeachers.map((teacher) => (
-              <tr key={teacher.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">{teacher.teacher_id}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm">{teacher.name}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm">{teacher.email}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm">{teacher.subject}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm">{teacher.experience_years || 'N/A'} years</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm space-x-2">
-                  <button className="text-blue-600 hover:text-blue-900"><Edit className="w-5 h-5" /></button>
-                  <button className="text-red-600 hover:text-red-900"><Trash2 className="w-5 h-5" /></button>
+            {filteredTeachers.length === 0 ? (
+              <tr>
+                <td colSpan="6" className="px-6 py-8 text-center text-gray-500">
+                  {searchTerm ? 'No teachers found matching your search.' : 'No teachers yet. Add your first teacher!'}
                 </td>
               </tr>
-            ))}
+            ) : (
+              filteredTeachers.map((teacher) => (
+                <tr key={teacher.id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">{teacher.id}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm">{teacher.user?.first_name} {teacher.user?.last_name}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm">{teacher.user?.email}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm">{teacher.department || 'N/A'}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm">{teacher.phone || 'N/A'}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm space-x-2">
+                    {isAdmin ? (
+                      <>
+                        <button
+                          onClick={() => handleEdit(teacher)}
+                          className="text-blue-600 hover:text-blue-900"
+                          title="Edit"
+                        >
+                          <Edit className="w-5 h-5" />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(teacher.id)}
+                          className="text-red-600 hover:text-red-900"
+                          title="Delete"
+                        >
+                          <Trash2 className="w-5 h-5" />
+                        </button>
+                      </>
+                    ) : (
+                      <span className="text-gray-400 text-sm">View only</span>
+                    )}
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
 
-      <Modal isOpen={showModal} onClose={() => setShowModal(false)} title="Add New Teacher" size="lg">
+      <Modal
+        isOpen={showModal}
+        onClose={() => {
+          setShowModal(false);
+          setEditingTeacher(null);
+        }}
+        title={editingTeacher ? "Edit Teacher" : "Add New Teacher"}
+        size="lg"
+      >
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <input
@@ -161,9 +251,9 @@ const TeachersPage = () => {
             />
             <input
               type="text"
-              placeholder="Subject *"
-              value={formData.subject}
-              onChange={(e) => setFormData({...formData, subject: e.target.value})}
+              placeholder="Department *"
+              value={formData.department}
+              onChange={(e) => setFormData({...formData, department: e.target.value})}
               className="px-4 py-2 border rounded-lg"
             />
             <input
@@ -189,8 +279,21 @@ const TeachersPage = () => {
             />
           </div>
           <div className="flex justify-end space-x-3">
-            <button onClick={() => setShowModal(false)} className="px-4 py-2 border rounded-lg">Cancel</button>
-            <button onClick={handleSubmit} className="px-4 py-2 bg-blue-600 text-white rounded-lg">Add Teacher</button>
+            <button
+              onClick={() => {
+                setShowModal(false);
+                setEditingTeacher(null);
+              }}
+              className="px-4 py-2 border rounded-lg"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleSubmit}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg"
+            >
+              {editingTeacher ? 'Update Teacher' : 'Add Teacher'}
+            </button>
           </div>
         </div>
       </Modal>

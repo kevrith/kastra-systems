@@ -1,14 +1,17 @@
 import React from 'react';
-import { 
-  TrendingUp, 
-  Users, 
-  GraduationCap, 
-  BookOpen, 
-  Bell, 
+import {
+  TrendingUp,
+  Users,
+  GraduationCap,
+  BookOpen,
+  Bell,
   Calendar,
   FileText,
+  ClipboardList,
+  Award,
+  DollarSign,
   Menu,
-  X 
+  X
 } from 'lucide-react';
 
 const Sidebar = ({ activeTab, setActiveTab, sidebarOpen, setSidebarOpen }) => {
@@ -17,8 +20,11 @@ const Sidebar = ({ activeTab, setActiveTab, sidebarOpen, setSidebarOpen }) => {
     { id: 'students', icon: Users, label: 'Students' },
     { id: 'teachers', icon: GraduationCap, label: 'Teachers' },
     { id: 'courses', icon: BookOpen, label: 'Courses' },
+    { id: 'assignments', icon: ClipboardList, label: 'Assignments' },
     { id: 'grades', icon: FileText, label: 'Grades' },
     { id: 'attendance', icon: Calendar, label: 'Attendance' },
+    { id: 'reports', icon: Award, label: 'Report Cards' },
+    { id: 'fees',  icon: () => <span style={{ fontWeight: 'bold', fontSize: '18px' }}>KSh</span>,label: 'Fee Structure' },
     { id: 'announcements', icon: Bell, label: 'Announcements' },
   ];
 
