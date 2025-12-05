@@ -24,7 +24,11 @@ app = FastAPI(
 # CORS middleware configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:3000"],  # React dev server
+    allow_origins=[
+        "http://localhost:5173",  # Local Vite dev server
+        "http://localhost:3000",  # Alternative local port
+        "https://kastra.netlify.app"  # Production frontend
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

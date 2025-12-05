@@ -1,0 +1,15 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+# Production environment variables
+[context.production.environment]
+  VITE_API_URL = "https://kastra-systems.onrender.com/api"
+
+# Deploy preview environment variables (for branch deploys)
+[context.deploy-preview.environment]
+  VITE_API_URL = "https://kastra-systems.onrender.com/api"
+
+# Branch deploy environment variables
+[context.branch-deploy.environment]
+  VITE_API_URL = "https://kastra-systems.onrender.com/api"
