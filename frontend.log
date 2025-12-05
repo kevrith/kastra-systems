@@ -2,8 +2,15 @@
 > kastra-systems-app@0.0.0 dev
 > vite
 
+Port 5173 is in use, trying another one...
 
-  VITE v7.2.6  ready in 88 ms
+  VITE v7.2.6  ready in 131 ms
 
-  ➜  Local:   http://localhost:5173/
+  ➜  Local:   http://localhost:5174/
   ➜  Network: use --host to expose
+1:08:58 PM [vite] .env.local changed, restarting server...
+1:08:58 PM [vite] server restarted.
+1:14:10 PM [vite] .env.local changed, restarting server...
+1:14:10 PM [vite] server restarted.
+
+1:14:10 PM [vite] server restarted.
