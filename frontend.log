@@ -12,5 +12,8 @@ Port 5173 is in use, trying another one...
 1:08:58 PM [vite] server restarted.
 1:14:10 PM [vite] .env.local changed, restarting server...
 1:14:10 PM [vite] server restarted.
+1:19:04 PM [vite] .env.local changed,1:19:04 PM [vite] .env1:19:04 PM [vite] server restarted.
+1:19:25 PM [vite] .env.development changed, restarting server...
+1:19:25 PM [vite] server restarted.
 
-1:14:10 PM [vite] server restarted.
+1:19:25 PM [vite] server restarted.
