@@ -176,11 +176,11 @@ const Login = ({ onLogin }) => {
           </button>
         </div>
 
-        <div className="mt-4 text-xs text-gray-500 text-center">
+        {/* <div className="mt-4 text-xs text-gray-500 text-center">
           <p>Demo credentials:</p>
           <p>Email: admin@kastra.com</p>
           <p>Password: admin123</p>
-        </div>
+        </div> */}
       </div>
     </div>
   );
