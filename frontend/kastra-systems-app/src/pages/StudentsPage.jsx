@@ -267,14 +267,14 @@ const StudentsPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Student ID *
+                Student ID (optional - auto-generated if blank)
               </label>
               <input
                 type="text"
+                placeholder="Leave blank for auto-generation"
                 value={formData.student_id}
                 onChange={(e) => setFormData({...formData, student_id: e.target.value})}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                required
               />
             </div>
             <div>
@@ -291,10 +291,29 @@ const StudentsPage = () => {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
+<<<<<<< HEAD
                 Last Name *
               </label>
               <input
                 type="text"
+=======
+                First Name *
+              </label>
+              <input
+                type="text"
+                value={formData.first_name}
+                onChange={(e) => setFormData({...formData, first_name: e.target.value})}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Last Name *
+              </label>
+              <input
+                type="text"
+>>>>>>> refs/remotes/origin/dev
                 value={formData.last_name}
                 onChange={(e) => setFormData({...formData, last_name: e.target.value})}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
