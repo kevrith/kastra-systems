@@ -3,7 +3,7 @@ import { Users, GraduationCap, BookOpen, Calendar } from 'lucide-react';
 import StatCard from '../components/StatCard';
 import { dashboardService } from '../services';
 
-const DashboardPage = () => {
+const DashboardPage = ({ onNavigate }) => {
   const [stats, setStats] = useState({
     total_students: 0,
     total_teachers: 0,
@@ -119,13 +119,22 @@ const DashboardPage = () => {
         <div className="bg-white rounded-lg shadow-md p-6">
           <h3 className="text-lg font-bold text-gray-800 mb-4">Quick Actions</h3>
           <div className="space-y-2">
-            <button className="w-full text-left px-4 py-2 bg-blue-50 hover:bg-blue-100 rounded-lg transition">
+            <button
+              onClick={() => onNavigate?.('students')}
+              className="w-full text-left px-4 py-2 bg-blue-50 hover:bg-blue-100 rounded-lg transition"
+            >
               Add New Student
             </button>
-            <button className="w-full text-left px-4 py-2 bg-green-50 hover:bg-green-100 rounded-lg transition">
+            <button
+              onClick={() => onNavigate?.('teachers')}
+              className="w-full text-left px-4 py-2 bg-green-50 hover:bg-green-100 rounded-lg transition"
+            >
               Add New Teacher
             </button>
-            <button className="w-full text-left px-4 py-2 bg-purple-50 hover:bg-purple-100 rounded-lg transition">
+            <button
+              onClick={() => onNavigate?.('courses')}
+              className="w-full text-left px-4 py-2 bg-purple-50 hover:bg-purple-100 rounded-lg transition"
+            >
               Create New Course
             </button>
           </div>

@@ -4,17 +4,7 @@
 
 Port 5173 is in use, trying another one...
 
-  VITE v7.2.6  ready in 131 ms
+  VITE v7.2.6  ready in 212 ms
 
   ➜  Local:   http://localhost:5174/
   ➜  Network: use --host to expose
-1:08:58 PM [vite] .env.local changed, restarting server...
-1:08:58 PM [vite] server restarted.
-1:14:10 PM [vite] .env.local changed, restarting server...
-1:14:10 PM [vite] server restarted.
-1:19:04 PM [vite] .env.local changed,1:19:04 PM [vite] .env1:19:04 PM [vite] server restarted.
-1:19:25 PM [vite] .env.development changed, restarting server...
-1:19:25 PM [vite] server restarted.
-
-1:19:25 PM [vite] server restarted.
-1:53:56 PM [vite] (client) hmr update /src/index.css, /src/components/Login.jsx, /src/pages/StudentsPage.jsx, /src/pages/AttendancePage.jsx, /src/pages/GradesPage.jsx, /src/pages/ReportCardPage.jsx, /src/pages/FeeStructurePage.jsx, /src/pages/DashboardPage.jsx, /src/pages/TeachersPage.jsx, /src/pages/CoursesPage.jsx, /src/pages/AssignmentsPage.jsx, /src/pages/AnnouncementsPage.jsx

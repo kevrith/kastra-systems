@@ -1,12 +1,10 @@
 // Base API configuration with fallback
-const PRIMARY_API = import.meta.env.VITE_API_URL || 'https://kastra-systems.onrender.com/api';
-const FALLBACK_API = 'http://localhost:8000/api';
-
-// Track which API is currently being used
-let currentAPI = PRIMARY_API;
+// Default to localhost for local development
+const PRIMARY_API = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+const FALLBACK_API = 'https://kastra-systems.onrender.com/api';
 
 // API request helper with automatic fallback
-export const apiRequest = async (endpoint, options = {}, retryWithFallback = true) => {
+export const apiRequest = async (endpoint, options = {}, retryWithFallback = true, apiToUse = PRIMARY_API) => {
   const token = localStorage.getItem('token');
 
   const config = {
@@ -23,7 +21,7 @@ export const apiRequest = async (endpoint, options = {}, retryWithFallback = tru
   }
 
   try {
-    const response = await fetch(`${currentAPI}${endpoint}`, config);
+    const response = await fetch(`${apiToUse}${endpoint}`, config);
 
     // If response is ok, parse and return data
     if (response.ok) {
@@ -45,20 +43,17 @@ export const apiRequest = async (endpoint, options = {}, retryWithFallback = tru
     throw new Error(data.detail || data.error || 'Something went wrong');
 
   } catch (error) {
-    console.error(`API Error (${currentAPI}):`, error);
+    console.error(`API Error (${apiToUse}):`, error);
 
     // If primary API fails and we haven't tried fallback yet
-    if (currentAPI === PRIMARY_API && retryWithFallback) {
-      console.warn('Primary API failed, trying fallback localhost...');
-      currentAPI = FALLBACK_API;
+    if (apiToUse === PRIMARY_API && retryWithFallback) {
+      console.warn('Primary API failed, trying fallback...');
 
       try {
         // Retry with fallback API
-        return await apiRequest(endpoint, options, false);
+        return await apiRequest(endpoint, options, false, FALLBACK_API);
       } catch (fallbackError) {
         console.error('Fallback API also failed:', fallbackError);
-        // Reset to primary for next request
-        currentAPI = PRIMARY_API;
         throw new Error('Both primary and fallback APIs are unavailable. Please check your connection.');
       }
     }

@@ -11,14 +11,12 @@ const TeachersPage = ({ user }) => {
   const [editingTeacher, setEditingTeacher] = useState(null);
   const isAdmin = user?.role === 'admin';
   const [formData, setFormData] = useState({
-    teacher_id: '',
-    name: '',
+    first_name: '',
+    last_name: '',
     email: '',
+    password: '',
     phone: '',
     department: '',
-    qualification: '',
-    experience_years: '',
-    salary: '',
   });
 
   useEffect(() => {
@@ -40,14 +38,12 @@ const TeachersPage = ({ user }) => {
   const handleEdit = (teacher) => {
     setEditingTeacher(teacher);
     setFormData({
-      teacher_id: teacher.teacher_id || '',
-      name: `${teacher.user?.first_name || ''} ${teacher.user?.last_name || ''}`.trim(),
+      first_name: teacher.user?.first_name || '',
+      last_name: teacher.user?.last_name || '',
       email: teacher.user?.email || '',
+      password: '', // Password not needed for editing
       phone: teacher.phone || '',
       department: teacher.department || '',
-      qualification: teacher.qualification || '',
-      experience_years: teacher.experience_years || '',
-      salary: teacher.salary || '',
     });
     setShowModal(true);
   };
@@ -68,14 +64,19 @@ const TeachersPage = ({ user }) => {
     try {
       const teacherData = {
         ...formData,
-        experience_years: formData.experience_years ? parseInt(formData.experience_years) : null,
-        salary: formData.salary ? parseFloat(formData.salary) : null,
       };
 
+      // Remove password field if editing (not required for updates)
       if (editingTeacher) {
+        delete teacherData.password;
         await teacherService.updateTeacher(editingTeacher.id, teacherData);
         alert('Teacher updated successfully!');
       } else {
+        // For new teachers, password is required
+        if (!teacherData.password) {
+          alert('Password is required for new teachers');
+          return;
+        }
         await teacherService.createTeacher(teacherData);
         alert('Teacher added successfully!');
       }
@@ -83,14 +84,12 @@ const TeachersPage = ({ user }) => {
       setShowModal(false);
       setEditingTeacher(null);
       setFormData({
-        teacher_id: '',
-        name: '',
+        first_name: '',
+        last_name: '',
         email: '',
+        password: '',
         phone: '',
         department: '',
-        qualification: '',
-        experience_years: '',
-        salary: '',
       });
       loadTeachers();
     } catch (error) {
@@ -135,14 +134,12 @@ const TeachersPage = ({ user }) => {
             onClick={() => {
               setEditingTeacher(null);
               setFormData({
-                teacher_id: '',
-                name: '',
+                first_name: '',
+                last_name: '',
                 email: '',
+                password: '',
                 phone: '',
                 department: '',
-                qualification: '',
-                experience_years: '',
-                salary: '',
               });
               setShowModal(true);
             }}
@@ -223,17 +220,19 @@ const TeachersPage = ({ user }) => {
           <div className="grid grid-cols-2 gap-4">
             <input
               type="text"
-              placeholder="Teacher ID *"
-              value={formData.teacher_id}
-              onChange={(e) => setFormData({...formData, teacher_id: e.target.value})}
+              placeholder="First Name *"
+              value={formData.first_name}
+              onChange={(e) => setFormData({...formData, first_name: e.target.value})}
               className="px-4 py-2 border rounded-lg"
+              required
             />
             <input
               type="text"
-              placeholder="Full Name *"
-              value={formData.name}
-              onChange={(e) => setFormData({...formData, name: e.target.value})}
+              placeholder="Last Name *"
+              value={formData.last_name}
+              onChange={(e) => setFormData({...formData, last_name: e.target.value})}
               className="px-4 py-2 border rounded-lg"
+              required
             />
             <input
               type="email"
@@ -241,7 +240,18 @@ const TeachersPage = ({ user }) => {
               value={formData.email}
               onChange={(e) => setFormData({...formData, email: e.target.value})}
               className="px-4 py-2 border rounded-lg"
+              required
             />
+            {!editingTeacher && (
+              <input
+                type="password"
+                placeholder="Password *"
+                value={formData.password}
+                onChange={(e) => setFormData({...formData, password: e.target.value})}
+                className="px-4 py-2 border rounded-lg"
+                required
+              />
+            )}
             <input
               type="tel"
               placeholder="Phone"
@@ -251,30 +261,9 @@ const TeachersPage = ({ user }) => {
             />
             <input
               type="text"
-              placeholder="Department *"
+              placeholder="Department"
               value={formData.department}
               onChange={(e) => setFormData({...formData, department: e.target.value})}
-              className="px-4 py-2 border rounded-lg"
-            />
-            <input
-              type="text"
-              placeholder="Qualification"
-              value={formData.qualification}
-              onChange={(e) => setFormData({...formData, qualification: e.target.value})}
-              className="px-4 py-2 border rounded-lg"
-            />
-            <input
-              type="number"
-              placeholder="Experience (years)"
-              value={formData.experience_years}
-              onChange={(e) => setFormData({...formData, experience_years: e.target.value})}
-              className="px-4 py-2 border rounded-lg"
-            />
-            <input
-              type="number"
-              placeholder="Salary"
-              value={formData.salary}
-              onChange={(e) => setFormData({...formData, salary: e.target.value})}
               className="px-4 py-2 border rounded-lg"
             />
           </div>
