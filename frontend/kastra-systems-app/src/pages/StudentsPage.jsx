@@ -63,22 +63,36 @@ const StudentsPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const studentData = {
-        ...formData,
-        grade_level: parseInt(formData.grade_level),
-      };
+      // Clean up the data - remove empty strings, convert to proper types, remove null/undefined
+      const studentData = {};
 
-      // Remove password field if editing (not required for updates)
+      // Required fields
+      studentData.email = formData.email;
+      studentData.first_name = formData.first_name;
+      studentData.last_name = formData.last_name;
+
+      // Optional fields - only include if they have values
+      if (formData.student_id) studentData.student_id = formData.student_id;
+      if (formData.phone) studentData.phone = formData.phone;
+      if (formData.address) studentData.address = formData.address;
+      if (formData.date_of_birth) studentData.date_of_birth = formData.date_of_birth;
+      if (formData.grade_level) studentData.grade_level = parseInt(formData.grade_level);
+      if (formData.guardian_name) studentData.guardian_name = formData.guardian_name;
+      if (formData.guardian_phone) studentData.guardian_phone = formData.guardian_phone;
+      if (formData.guardian_email) studentData.guardian_email = formData.guardian_email;
+
+      // Handle password field
       if (editingStudent) {
-        delete studentData.password;
+        // Editing - password not required
         await studentService.updateStudent(editingStudent.id, studentData);
         alert('Student updated successfully!');
       } else {
-        // For new students, password is required
-        if (!studentData.password) {
+        // Creating - password is required
+        if (!formData.password) {
           alert('Password is required for new students');
           return;
         }
+        studentData.password = formData.password;
         await studentService.createStudent(studentData);
         alert('Student added successfully!');
       }
@@ -291,29 +305,10 @@ const StudentsPage = () => {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-<<<<<<< HEAD
                 Last Name *
               </label>
               <input
                 type="text"
-=======
-                First Name *
-              </label>
-              <input
-                type="text"
-                value={formData.first_name}
-                onChange={(e) => setFormData({...formData, first_name: e.target.value})}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Last Name *
-              </label>
-              <input
-                type="text"
->>>>>>> refs/remotes/origin/dev
                 value={formData.last_name}
                 onChange={(e) => setFormData({...formData, last_name: e.target.value})}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
@@ -370,7 +365,7 @@ const StudentsPage = () => {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Grade Level *
+                Grade Level
               </label>
               <input
                 type="number"
@@ -379,7 +374,6 @@ const StudentsPage = () => {
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                 min="1"
                 max="12"
-                required
               />
             </div>
             <div>
