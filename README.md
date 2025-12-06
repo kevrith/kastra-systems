@@ -61,7 +61,7 @@ VITE_API_URL=http://localhost:8000/api
 
 **Production:**
 - Backend: https://kastra-systems.onrender.com
-- Frontend: https://kastra.netlify.app
+- Frontend: https://kastra-systems.vercel.app
 
 ### Backend (Render)
 
@@ -72,16 +72,16 @@ Update CORS in [backend/main.py](backend/main.py):
 ```python
 allow_origins=[
     "http://localhost:5173",
-    "https://kastra.netlify.app"
+    "https://kastra-systems.vercel.app"
 ]
 ```
 
-### Frontend (Netlify)
+### Frontend (Vercel)
 
-The [netlify.toml](frontend/kastra-systems-app/netlify.toml) is pre-configured with production settings. Simply push to deploy.
+The project is configured for automatic deployment on Vercel.
 
 **Manual setup:**
-1. Netlify dashboard → Site settings → Environment variables
+1. Vercel dashboard → Project settings → Environment Variables
 2. Add `VITE_API_URL` = `https://kastra-systems.onrender.com/api`
 3. Deploy
 
@@ -137,8 +137,9 @@ cp backend/kastra_systems.db backend/backups/backup_$(date +%Y%m%d).db
 
 **Production Issues:**
 - CORS errors: Check backend CORS configuration
-- Build fails: Review Netlify build logs
+- Build fails: Review Vercel deployment logs
 - API errors: Check Render service logs
+- 422 Errors: Ensure frontend and backend schemas match (check deployed versions)
 
 ## Security
 
