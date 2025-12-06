@@ -11,8 +11,10 @@ const StudentsPage = () => {
   const [editingStudent, setEditingStudent] = useState(null);
   const [formData, setFormData] = useState({
     student_id: '',
-    name: '',
+    first_name: '',
+    last_name: '',
     email: '',
+    password: '',
     phone: '',
     address: '',
     date_of_birth: '',
@@ -43,8 +45,10 @@ const StudentsPage = () => {
     setEditingStudent(student);
     setFormData({
       student_id: student.student_id || '',
-      name: `${student.user?.first_name || ''} ${student.user?.last_name || ''}`.trim(),
+      first_name: student.user?.first_name || '',
+      last_name: student.user?.last_name || '',
       email: student.user?.email || '',
+      password: '', // Password not needed for editing
       phone: student.phone || '',
       address: student.address || '',
       date_of_birth: student.date_of_birth || '',
@@ -64,10 +68,17 @@ const StudentsPage = () => {
         grade_level: parseInt(formData.grade_level),
       };
 
+      // Remove password field if editing (not required for updates)
       if (editingStudent) {
+        delete studentData.password;
         await studentService.updateStudent(editingStudent.id, studentData);
         alert('Student updated successfully!');
       } else {
+        // For new students, password is required
+        if (!studentData.password) {
+          alert('Password is required for new students');
+          return;
+        }
         await studentService.createStudent(studentData);
         alert('Student added successfully!');
       }
@@ -76,8 +87,10 @@ const StudentsPage = () => {
       setEditingStudent(null);
       setFormData({
         student_id: '',
-        name: '',
+        first_name: '',
+        last_name: '',
         email: '',
+        password: '',
         phone: '',
         address: '',
         date_of_birth: '',
@@ -142,8 +155,10 @@ const StudentsPage = () => {
             setEditingStudent(null);
             setFormData({
               student_id: '',
-              name: '',
+              first_name: '',
+              last_name: '',
               email: '',
+              password: '',
               phone: '',
               address: '',
               date_of_birth: '',
@@ -252,24 +267,36 @@ const StudentsPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Student ID *
+                Student ID (optional - auto-generated if blank)
               </label>
               <input
                 type="text"
+                placeholder="Leave blank for auto-generation"
                 value={formData.student_id}
                 onChange={(e) => setFormData({...formData, student_id: e.target.value})}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                First Name *
+              </label>
+              <input
+                type="text"
+                value={formData.first_name}
+                onChange={(e) => setFormData({...formData, first_name: e.target.value})}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                 required
               />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Full Name *
+                Last Name *
               </label>
               <input
                 type="text"
-                value={formData.name}
-                onChange={(e) => setFormData({...formData, name: e.target.value})}
+                value={formData.last_name}
+                onChange={(e) => setFormData({...formData, last_name: e.target.value})}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                 required
               />
@@ -286,6 +313,20 @@ const StudentsPage = () => {
                 required
               />
             </div>
+            {!editingStudent && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Password *
+                </label>
+                <input
+                  type="password"
+                  value={formData.password}
+                  onChange={(e) => setFormData({...formData, password: e.target.value})}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+            )}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Phone
