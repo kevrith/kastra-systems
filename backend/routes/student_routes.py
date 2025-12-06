@@ -56,12 +56,25 @@ def create_student(
     db.commit()
     db.refresh(user)
 
+    # Generate student_id if not provided
+    if not student_data.student_id:
+        # Auto-generate student_id as STU + user_id padded to 4 digits
+        generated_student_id = f"STU{user.id:04d}"
+    else:
+        generated_student_id = student_data.student_id
+
     # Create student
     student = models.Student(
         user_id=user.id,
+        student_id=generated_student_id,
         phone=student_data.phone,
         date_of_birth=student_data.date_of_birth,
-        address=student_data.address
+        address=student_data.address,
+        grade_level=student_data.grade_level,
+        admission_date=student_data.admission_date,
+        guardian_name=student_data.guardian_name,
+        guardian_phone=student_data.guardian_phone,
+        guardian_email=student_data.guardian_email
     )
     db.add(student)
     db.commit()

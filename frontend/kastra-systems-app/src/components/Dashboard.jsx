@@ -19,7 +19,7 @@ const Dashboard = ({ user, onLogout }) => {
   const renderContent = () => {
     switch (activeTab) {
       case 'dashboard':
-        return <DashboardPage />;
+        return <DashboardPage onNavigate={setActiveTab} />;
       case 'students':
         return <StudentsPage />;
       case 'teachers':
@@ -39,7 +39,7 @@ const Dashboard = ({ user, onLogout }) => {
       case 'announcements':
         return <AnnouncementsPage user={user} />;
       default:
-        return <DashboardPage />;
+        return <DashboardPage onNavigate={setActiveTab} />;
     }
   };
 
